@@ -85,6 +85,11 @@ public class MessageBroker implements IMessageBroker {
         return unconsumedMessagesCount;
     }
 
+    public void clearMessageBroker() {
+        messages.clear();
+        lockConditions.clear();
+    }
+
     public void displayStatus() {
 
     }

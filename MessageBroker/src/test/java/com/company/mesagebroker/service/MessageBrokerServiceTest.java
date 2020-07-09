@@ -23,6 +23,7 @@ public class MessageBrokerServiceTest {
 
     @After
     public void cleanUp() {
+        messageBroker.clearMessageBroker();
         messageBroker = null;
         messagePublisher = null;
         messageConsumer = null;
@@ -71,10 +72,24 @@ public class MessageBrokerServiceTest {
     }
 
     @Test
-    public void testMessageBrokerUnconsumedMessagesCount() {
+    public void testMessageBrokerPublish() {
+        String messageDataOfPublishedMessage = "MyMessage";
+        messageBroker.publishMessage(MessageType.BUY_ORDER, messageDataOfPublishedMessage);
+        assertEquals(1, messageBroker.unConsumedMessagesCount());
+        assertEquals(1, messageBroker.publishedMessagesCount());
+        assertEquals(0, messageBroker.consumedMessagesCount());
+    }
+
+    @Test
+    public void testMessageBrokerConsume() throws InterruptedException {
+        String messageDataOfPublishedMessage = "MyMessage";
+        messageBroker.publishMessage(MessageType.BUY_ORDER, messageDataOfPublishedMessage);
+
+        String messageDataOfConsumedMessage = messageBroker.consumeMessage(MessageType.BUY_ORDER);
+        assertEquals(messageDataOfPublishedMessage, messageDataOfConsumedMessage);
         assertEquals(0, messageBroker.unConsumedMessagesCount());
-        messagePublisher.run();
-        assertEquals(24+1, messageBroker.unConsumedMessagesCount());
+        assertEquals(1, messageBroker.publishedMessagesCount());
+        assertEquals(1, messageBroker.consumedMessagesCount());
     }
 
 }

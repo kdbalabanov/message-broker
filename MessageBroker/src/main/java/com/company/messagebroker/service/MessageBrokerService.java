@@ -21,19 +21,20 @@ import java.util.concurrent.TimeUnit;
  */
 public class MessageBrokerService {
     private static MessageBrokerService instance;
-    private final IMessageBroker messageBroker;
-    private final ExecutorService executorService;
-    private static final int numTasks = 150;
-    private static final long numMessagesToProduce = 1000;
-    private static final int timeOutMinutes = 1;
+    private final IMessageBroker MESSAGE_BROKER;
+    private final ExecutorService EXECUTOR_SERVICE;
+
+    private static final int NUM_TASKS = 150;
+    private static final long NUM_MESSAGES_TO_PRODUCE = 1000;
+    private static final int TIME_OUT_MINUTES = 1;
 
     /**
      * Private constructor for MessageBrokerService
      */
     private MessageBrokerService() {
-        messageBroker = new MessageBroker();
+        MESSAGE_BROKER = new MessageBroker();
         int numCores = Runtime.getRuntime().availableProcessors();
-        executorService = Executors.newFixedThreadPool(numCores);
+        EXECUTOR_SERVICE = Executors.newFixedThreadPool(numCores);
     }
 
     /**
@@ -64,19 +65,19 @@ public class MessageBrokerService {
      * @throws Exception
      */
     public void run() throws Exception {
-        for (int i = 1; i <= numTasks; i++) {
+        for (int i = 1; i <= NUM_TASKS; i++) {
             MessageType messageType = MessageType.getRandom();
-            executorService.execute(new MessagePublisher(i, messageType, numMessagesToProduce, messageBroker));
-            executorService.execute(new MessageConsumer(i, messageType, messageBroker));
+            EXECUTOR_SERVICE.execute(new MessagePublisher(i, messageType, NUM_MESSAGES_TO_PRODUCE, MESSAGE_BROKER));
+            EXECUTOR_SERVICE.execute(new MessageConsumer(i, messageType, MESSAGE_BROKER));
         }
 
-        executorService.shutdown();
+        EXECUTOR_SERVICE.shutdown();
         // Force a timeout if the application can not finish the tasks for longer than the specified time (in minutes)
-        executorService.awaitTermination(timeOutMinutes, TimeUnit.MINUTES);
+        EXECUTOR_SERVICE.awaitTermination(TIME_OUT_MINUTES, TimeUnit.MINUTES);
 
-        System.out.println("Published messages: " + messageBroker.consumedMessagesCount());
-        System.out.println("Consumed messages: " + messageBroker.consumedMessagesCount());
-        System.out.println("Unconsumed messages: " + messageBroker.unConsumedMessagesCount());
+        System.out.println("Published messages: " + MESSAGE_BROKER.consumedMessagesCount());
+        System.out.println("Consumed messages: " + MESSAGE_BROKER.consumedMessagesCount());
+        System.out.println("Unconsumed messages: " + MESSAGE_BROKER.unConsumedMessagesCount());
     }
 
 }

@@ -8,7 +8,7 @@ import main.java.com.company.messagebroker.utils.TerminationMessage;
  * Implements Runnable so it is run as a task
  */
 public class MessageConsumer implements Runnable {
-    private final IMessageBroker messageBroker;
+    private final IMessageBroker MESSAGE_BROKER;
     int consumerId;
     MessageType messageTypeToConsume;
 
@@ -21,7 +21,7 @@ public class MessageConsumer implements Runnable {
     public MessageConsumer(int consumerId, MessageType messageTypeToConsume, IMessageBroker messageBroker) {
         this.consumerId = consumerId;
         this.messageTypeToConsume = messageTypeToConsume;
-        this.messageBroker = messageBroker;
+        this.MESSAGE_BROKER = messageBroker;
     }
 
     /**
@@ -32,7 +32,7 @@ public class MessageConsumer implements Runnable {
         try{
             System.out.println("Starting Consumer with id: " + consumerId + " on Thread: " + Thread.currentThread().getName());
             while (true) {
-                if (TerminationMessage.TERMINATE.toString().equals(messageBroker.consumeMessage(messageTypeToConsume))) {
+                if (TerminationMessage.TERMINATE.toString().equals(MESSAGE_BROKER.consumeMessage(messageTypeToConsume))) {
                     break;
                 }
             }

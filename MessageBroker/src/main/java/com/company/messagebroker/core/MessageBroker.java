@@ -18,23 +18,23 @@ public class MessageBroker implements IMessageBroker {
     private int publishedMessagesCount;
     private int consumedMessagesCount;
     // Use of ReentrantLock in order to make consuming and producing of messages thread-safe
-    private final ReentrantLock reentrantLock;
+    private final ReentrantLock LOCK;
     // Messages are stored in an EnumMap where the MessageType is the key and
-    private final Map<MessageType, List> messages;
+    private final Map<MessageType, List> MESSAGES;
     // Thread Conditions (one per MessageType) that ensure that MessageConsumer will wait when there are no available messages for its MessageType
-    private final Map<MessageType, Condition> lockConditions;
+    private final Map<MessageType, Condition> LOCK_CONDITIONS;
 
     /**
      * Constructor for MessageBroker
      */
     public MessageBroker() {
-        reentrantLock = new ReentrantLock(true);
-        lockConditions = new EnumMap<>(MessageType.class);
-        messages = new EnumMap<>(MessageType.class);
+        LOCK = new ReentrantLock(true);
+        LOCK_CONDITIONS = new EnumMap<>(MessageType.class);
+        MESSAGES = new EnumMap<>(MessageType.class);
 
         for (MessageType messageType : MessageType.values()) {
-            messages.put(messageType, new ArrayList<>());
-            lockConditions.put(messageType, reentrantLock.newCondition());
+            MESSAGES.put(messageType, new ArrayList<>());
+            LOCK_CONDITIONS.put(messageType, LOCK.newCondition());
         }
     }
 
@@ -57,18 +57,18 @@ public class MessageBroker implements IMessageBroker {
      * @param <T> the Message pay load of type T
      */
     public <T> void publishMessage(MessageType messageType, T message) {
-        reentrantLock.lock();
+        LOCK.lock();
         try {
             if (!message.equals(TerminationMessage.TERMINATE.toString())) {
-                messages.get(messageType).add(new Message<T>(messageType, message));
+                MESSAGES.get(messageType).add(new Message<T>(messageType, message));
                 publishedMessagesCount++;
             } else {
-                messages.get(messageType).add(0, new Message<T>(messageType, message));
+                MESSAGES.get(messageType).add(0, new Message<T>(messageType, message));
             }
 
-            lockConditions.get(messageType).signalAll();
+            LOCK_CONDITIONS.get(messageType).signalAll();
         } finally {
-            reentrantLock.unlock();
+            LOCK.unlock();
         }
     }
 
@@ -86,12 +86,12 @@ public class MessageBroker implements IMessageBroker {
      * @throws InterruptedException
      */
     public <T> T consumeMessage(MessageType messageType) throws InterruptedException {
-        reentrantLock.lock();
+        LOCK.lock();
         try {
-            List<Message> messagesForMessageType = messages.get(messageType);
+            List<Message> messagesForMessageType = MESSAGES.get(messageType);
 
             while (messagesForMessageType.isEmpty()) {
-                lockConditions.get(messageType).await();
+                LOCK_CONDITIONS.get(messageType).await();
             }
 
             int consumedMessageIndex = messagesForMessageType.size() - 1;
@@ -104,7 +104,7 @@ public class MessageBroker implements IMessageBroker {
 
             return messageData;
         } finally {
-            reentrantLock.unlock();
+            LOCK.unlock();
         }
     }
 
@@ -120,7 +120,7 @@ public class MessageBroker implements IMessageBroker {
         int unconsumedMessagesCount = 0;
 
         for (MessageType messageType : MessageType.values()) {
-            unconsumedMessagesCount += messages.get(messageType).size();
+            unconsumedMessagesCount += MESSAGES.get(messageType).size();
         }
 
         return unconsumedMessagesCount;

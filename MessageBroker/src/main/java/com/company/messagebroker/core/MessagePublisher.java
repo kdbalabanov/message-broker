@@ -10,7 +10,7 @@ import java.util.Random;
  * Implements Runnable so it is run as a task
  */
 public class MessagePublisher implements Runnable {
-    private IMessageBroker messageBroker;
+    private final IMessageBroker MESSAGE_BROKER;
     private int publisherId;
     private MessageType messageTypeToPublish;
     private long numOfMessagesToPublish;
@@ -26,7 +26,7 @@ public class MessagePublisher implements Runnable {
         this.publisherId = publisherId;
         this.messageTypeToPublish = messageTypeToPublish;
         this.numOfMessagesToPublish = numOfMessagesToPublish;
-        this.messageBroker = messageBroker;
+        this.MESSAGE_BROKER = messageBroker;
     }
 
     /**
@@ -37,9 +37,9 @@ public class MessagePublisher implements Runnable {
     public void run() {
         System.out.println("Starting Publisher with id: " + publisherId + " on Thread: " + Thread.currentThread().getName());
         for (int i = 0; i < numOfMessagesToPublish; i++) {
-            messageBroker.publishMessage(messageTypeToPublish, generateRandomMessagePayload(20));
+            MESSAGE_BROKER.publishMessage(messageTypeToPublish, generateRandomMessagePayload(20));
         }
-        messageBroker.publishMessage(messageTypeToPublish, TerminationMessage.TERMINATE.toString());
+        MESSAGE_BROKER.publishMessage(messageTypeToPublish, TerminationMessage.TERMINATE.toString());
         System.out.println("Terminating Publisher with id: " + publisherId + " on Thread: " + Thread.currentThread().getName());
     }
 

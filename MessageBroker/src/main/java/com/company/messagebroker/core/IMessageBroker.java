@@ -15,7 +15,7 @@ public interface IMessageBroker {
      *
      * @param messageType the business type of message
      * @param message the message
-     * @param <T> data type of the message (String, Ingteger ...)
+     * @param <T> data type of the message (String, Integer ...)
      */
     <T> void publishMessage(MessageType messageType, T message);
 

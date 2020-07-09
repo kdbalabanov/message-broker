@@ -6,13 +6,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-
 import static org.junit.Assert.*;
 
 public class MessageBrokerServiceTest {
     private MessagePublisher messagePublisher;
     private MessageConsumer messageConsumer;
-    private MessageBroker messageBroker;
+    private IMessageBroker messageBroker;
 
     @Before
     public void setUp() {
@@ -23,7 +22,6 @@ public class MessageBrokerServiceTest {
 
     @After
     public void cleanUp() {
-        messageBroker.clearMessageBroker();
         messageBroker = null;
         messagePublisher = null;
         messageConsumer = null;

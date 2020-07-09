@@ -5,8 +5,11 @@ import main.java.com.company.messagebroker.service.MessageBrokerService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Main starting point of the Application
+ */
 public class MessageBrokerApplication {
-    private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    private static final Logger LOGGER = Logger.getLogger(MessageBrokerApplication.class.getName());
 
     public static void main(String[] args) {
         try {

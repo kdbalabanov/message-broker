@@ -1,5 +1,7 @@
 package main.java.com.company.messagebroker;
 
+import main.java.com.company.messagebroker.service.MessageBrokerService;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -8,7 +10,7 @@ public class MessageBrokerApplication {
 
     public static void main(String[] args) {
         try {
-            System.out.println("Hello from MessageBroker");
+            MessageBrokerService.getInstance().run();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage());
             System.exit(-1);

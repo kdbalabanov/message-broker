@@ -24,7 +24,7 @@ public class MessageBrokerService {
     private final IMessageBroker MESSAGE_BROKER;
     private final ExecutorService EXECUTOR_SERVICE;
 
-    private static final int NUM_TASKS = 150;
+    private static final int NUM_TASKS = 3;
     private static final long NUM_MESSAGES_TO_PRODUCE = 1000;
     private static final int TIME_OUT_MINUTES = 1;
 
@@ -62,6 +62,9 @@ public class MessageBrokerService {
      * is achieved by the MessagePublisher/s sending a TerminationMessage once the target of number of messages
      * to publish is reached
      *
+     * Note that TerminationMessage/s are not counted towards total messages published and consumed, only the
+     * messages with "regular" payload are
+     *
      * @throws Exception
      */
     public void run() throws Exception {
@@ -75,9 +78,12 @@ public class MessageBrokerService {
         // Force a timeout if the application can not finish the tasks for longer than the specified time (in minutes)
         EXECUTOR_SERVICE.awaitTermination(TIME_OUT_MINUTES, TimeUnit.MINUTES);
 
-        System.out.println("Published messages: " + MESSAGE_BROKER.consumedMessagesCount());
-        System.out.println("Consumed messages: " + MESSAGE_BROKER.consumedMessagesCount());
-        System.out.println("Unconsumed messages: " + MESSAGE_BROKER.unConsumedMessagesCount());
+        printResults();
+    }
+
+    private void printResults() {
+        System.out.printf("%n%-25s%-25s%-25s%n", "Published Messages", "Consumed Messages", "Unconsumed Messages");
+        System.out.printf("%-25d%-25d%-25d%n", MESSAGE_BROKER.publishedMessagesCount(), MESSAGE_BROKER.consumedMessagesCount(), MESSAGE_BROKER.unConsumedMessagesCount());
     }
 
 }

@@ -9,12 +9,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
  * The MessageBroker acts as a thread-safe buffer between MessagePublisher and MessageConsumer
  */
 public class MessageBroker implements IMessageBroker {
+    private static final Logger LOGGER = Logger.getLogger(MessageBroker.class.getName());
+
     private int publishedMessagesCount;
     private int consumedMessagesCount;
     // Use of ReentrantLock in order to make consuming and producing of messages thread-safe
@@ -67,6 +71,8 @@ public class MessageBroker implements IMessageBroker {
             }
 
             LOCK_CONDITIONS.get(messageType).signalAll();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, e.getMessage());
         } finally {
             LOCK.unlock();
         }
@@ -85,8 +91,9 @@ public class MessageBroker implements IMessageBroker {
      * @return the Message payload of type T
      * @throws InterruptedException
      */
-    public <T> T consumeMessage(MessageType messageType) throws InterruptedException {
+    public <T> T consumeMessage(MessageType messageType) {
         LOCK.lock();
+        T messageData = null;
         try {
             List<Message> messagesForMessageType = MESSAGES.get(messageType);
 
@@ -95,17 +102,18 @@ public class MessageBroker implements IMessageBroker {
             }
 
             int consumedMessageIndex = messagesForMessageType.size() - 1;
-            T messageData = (T) messagesForMessageType.get(consumedMessageIndex).getMessagePayload();
+            messageData = (T) messagesForMessageType.get(consumedMessageIndex).getMessagePayload();
             messagesForMessageType.remove(consumedMessageIndex);
 
             if (!messageData.equals(TerminationMessage.TERMINATE.toString())) {
                 consumedMessagesCount++;
             }
-
-            return messageData;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, e.getMessage());
         } finally {
             LOCK.unlock();
         }
+        return messageData;
     }
 
     public synchronized int publishedMessagesCount() {

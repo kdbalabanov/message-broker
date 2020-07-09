@@ -35,12 +35,12 @@ public class MessagePublisher implements Runnable {
      * The TerminationMessage is a signal for the consumer to terminate
      */
     public void run() {
-        System.out.println("Starting Publisher with id: " + publisherId + " on Thread: " + Thread.currentThread().getName());
+        System.out.printf("%-30s%-5s%-10d%-25s%n", "Starting Publisher", "id:", publisherId, Thread.currentThread().getName());
         for (int i = 0; i < numOfMessagesToPublish; i++) {
             MESSAGE_BROKER.publishMessage(messageTypeToPublish, generateRandomMessagePayload(20));
         }
         MESSAGE_BROKER.publishMessage(messageTypeToPublish, TerminationMessage.TERMINATE.toString());
-        System.out.println("Terminating Publisher with id: " + publisherId + " on Thread: " + Thread.currentThread().getName());
+        System.out.printf("%-30s%-5s%-10d%-25s%n", "Terminating Publisher", "id:", publisherId, Thread.currentThread().getName());
     }
 
     /**

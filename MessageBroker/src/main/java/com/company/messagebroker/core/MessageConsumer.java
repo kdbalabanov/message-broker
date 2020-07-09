@@ -29,18 +29,13 @@ public class MessageConsumer implements Runnable {
      * The MessageConsumer will terminate upon the consumption of a TerminationMessage
      */
     public void run() {
-        try{
-            System.out.println("Starting Consumer with id: " + consumerId + " on Thread: " + Thread.currentThread().getName());
-            while (true) {
-                if (TerminationMessage.TERMINATE.toString().equals(MESSAGE_BROKER.consumeMessage(messageTypeToConsume))) {
-                    break;
-                }
+        System.out.printf("%-30s%-5s%-10d%-25s%n", "Starting Consumer", "id:", consumerId, Thread.currentThread().getName());
+        while (true) {
+            if (TerminationMessage.TERMINATE.toString().equals(MESSAGE_BROKER.consumeMessage(messageTypeToConsume))) {
+                break;
             }
-            Thread.currentThread().interrupt();
-            System.out.println("Terminating Consumer with id: " + consumerId + " on Thread: " + Thread.currentThread().getName());
-        } catch(InterruptedException e){
-            System.out.println(e.getMessage());
         }
+        System.out.printf("%-30s%-5s%-10d%-25s%n", "Terminating Consumer", "id:", consumerId, Thread.currentThread().getName());
     }
 
     public int getConsumerId() {

@@ -26,7 +26,7 @@ public interface IMessageBroker {
      * @param <T> the message data type
      * @return the latest message in the broker for that message type
      */
-    <T> T consumeMessage(MessageType messageType) throws InterruptedException;
+    <T> T consumeMessage(MessageType messageType);
 
     /**
      * Enables to retrieve the published message count

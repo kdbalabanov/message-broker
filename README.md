@@ -20,4 +20,3 @@ Java 11
 This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/kdbalabanov/simple-python-blockchain/blob/master/LICENSE) file for details
 
 ## Acknowledgments
-

@@ -16,7 +16,7 @@ Java 11
 ## How to Run/Deploy
 
 1. Import as a Gradle project in IntelliJ/Eclipse
-2. Run the program (main in StockMarketApplication.java)
+2. Run the program (main in MessageBrokerApplication.java)
 
 ## License
 

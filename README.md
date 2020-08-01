@@ -18,10 +18,14 @@ Java 11
 1. Import as a Gradle project in IntelliJ/Eclipse
 2. Run the program (main in MessageBrokerApplication.java)
 
+The IntelliJ IDE is recommended.
+
 Note that you can customise parameters if needed (number of publishers and consumers, how many messages to publish etc.).
+
+## Running the tests
+
+The unit tests can be found in the MessageBroker/src/test folder. The JUnit testing framework was used.
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/kdbalabanov/message-broker/blob/master/LICENSE) file for details
-
-## Acknowledgments

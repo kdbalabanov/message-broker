@@ -5,10 +5,11 @@ Solving the producer consumer problem in a thread-safe manner (without the use o
 There are message publishers and message consumers interacting through a message broker.
 
 The following assumptions are made:
-      1. There is an equal number of MessagePublishers and MessageConsumers
-      2. For each MessagePublisher publishing messages of a specifc MessageType, there is a matching
-      MessageConsumer that consumes messages of that MessageType
-      3. There is no limit on the amount of messages that can be stored in the buffer/MessageBroker
+
+1. There is an equal number of MessagePublishers and MessageConsumers
+2. For each MessagePublisher publishing messages of a specifc MessageType, there is a matching
+MessageConsumer that consumes messages of that MessageType
+3. There is no limit on the amount of messages that can be stored in the buffer/MessageBroker
      
 These assumptions have led to the current implementation where graceful termination of MessageConumer/s
 is achieved by the MessagePublisher/s sending a TerminationMessage once the target of number of messages
